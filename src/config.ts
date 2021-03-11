@@ -24,7 +24,7 @@ export const config: {
   launchOptions: {
     headless: false,
     defaultViewport: {
-      width: 1200,
+      width: 1600,
       height: 900,
     },
   },

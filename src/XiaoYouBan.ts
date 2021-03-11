@@ -78,6 +78,7 @@ export class XiaoYouBan extends MissionRuntime {
           this.logger.error("login - Incorrect account or password, please check again");
         }
       }
+      return response;
     });
     // 点击登录按钮
     await loginBtn.click();
@@ -160,7 +161,7 @@ export class XiaoYouBan extends MissionRuntime {
         loopFlag = false;
       }
       // 点击学生列表，进去详情页面
-      await studentList[0].click();
+      // await studentList[0].click();
 
       // 监听Response，等待该学生博文加载完成
       await this.page
@@ -197,9 +198,10 @@ export class XiaoYouBan extends MissionRuntime {
           break;
         }
       }
-      await this.page.waitForTimeout(500);
+      
       // 点击审核通过按钮
-      await targetBtn.hover();
+      // await targetBtn.hover();
+      await this.page.waitForTimeout(500);
       await targetBtn.click();
       await this.page.waitForTimeout(500);
 
@@ -211,14 +213,22 @@ export class XiaoYouBan extends MissionRuntime {
       });
       // 找到评语填写的textarea
       let commentTextArea = await this.page.$(".text_area textarea");
+
+      await this.page.waitForSelector(".text_area textarea").catch((error) => {
+        this.logger.error(
+          `passWeeklyBlogs - waitForSelector [.comfirm_btn Button] timeout, will try again, ${error.message}`
+        );
+      });
       let comfirmBtn = await this.page.$(".comfirm_btn Button");
       // 随机输入commetList中的一条评论
       await commentTextArea.hover();
+      await commentTextArea.click();
       let commet = this.commetList[Math.floor(Math.random() * this.commetList.length)];
       await commentTextArea.type(
         commet
       );
       // 点击提交按钮
+      await this.page.waitForTimeout(500);
       await comfirmBtn.hover();
       await comfirmBtn.click();
       this.logger.info(`passWeeklyBlogs - Submit Commet - ${studentName}: ${commet}`)
