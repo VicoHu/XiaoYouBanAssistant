@@ -7,23 +7,12 @@ import {
 } from "puppeteer";
 import { XiaoYouBan } from "./XiaoYouBan";
 import { StartUp } from "./StartUp";
+import { config } from "./config";
 
-type launchOptions = LaunchOptions &
-  BrowserLaunchArgumentOptions &
-  BrowserConnectOptions & {
-    product?: Product;
-    extraPrefsFirefox?: Record<string, unknown>;
-  };
-// 配置浏览器launch配置
-let options: launchOptions = {
-  headless: false,
-  defaultViewport: {
-    width: 1200,
-    height: 900,
-  }
-};
+
+
 // 创建浏览器browser实例
-puppeteer.launch(options).then(async (browser) => {
+puppeteer.launch(config.launchOptions).then(async (browser) => {
   // 创建浏览器页面page实例
   const page = await browser.newPage();
 

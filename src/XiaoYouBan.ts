@@ -197,10 +197,11 @@ export class XiaoYouBan extends MissionRuntime {
           break;
         }
       }
-      await this.page.waitForTimeout(800);
+      await this.page.waitForTimeout(500);
       // 点击审核通过按钮
       await targetBtn.hover();
       await targetBtn.click();
+      await this.page.waitForTimeout(500);
 
       // 等待页面中text_area出现
       await this.page.waitForSelector(".text_area textarea").catch((error) => {
