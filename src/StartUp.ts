@@ -9,22 +9,20 @@ export const StartUp = {
   /**
    * 老师学校全称
    */
-  TeacherSchool:"湖南工程职业技术学院",
+  TeacherSchool:"XXXXXXXX大学",
   /**
    * 老师用户名
    */
-  TeacherName:"9241",
+  TeacherName:"88888",
   /**
    * 老师密码
    */
-  TeacherPassword:"mstf0731",
+  TeacherPassword:"ILoveYou",
   /**
    * 评论列表(至少要保证有1条)，多条则随机从中填充一条
    */
   CommentList: [
     "学校给你的是广度，是一个入门。真正的精通是需要你自己的不断摸索",
-    "加油，有了目标就要好好的为之而努力！",
-    "多思多问多做，积极乐观投入工作",
-    "社会才是最好的学校，出了校园发现你成长很多，自觉很多"
+    "加油，有了目标就要好好的为之而努力！"
   ]
 }
