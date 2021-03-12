@@ -177,7 +177,7 @@ export class XiaoYouBan extends MissionRuntime {
         })
         .catch((error) => {
           this.logger.error(
-            `passWeeklyBlogs - navigation home page timeout, please check your internet, ${error.message}`
+            `passWeeklyBlogs - loadBlogReviewRecord.action timeout, please check your internet, ${error.message}`
           );
         });
       // 获取学生姓名
@@ -201,9 +201,10 @@ export class XiaoYouBan extends MissionRuntime {
       
       // 点击审核通过按钮
       // await targetBtn.hover();
-      await this.page.waitForTimeout(500);
+      // 等待页面异步加载DOM节点完成
+      await this.page.waitForTimeout(750);
       await targetBtn.click();
-      await this.page.waitForTimeout(500);
+      // await this.page.waitForTimeout(500);
 
       // 等待页面中text_area出现
       await this.page.waitForSelector(".text_area textarea").catch((error) => {

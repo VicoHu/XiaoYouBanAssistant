@@ -27,5 +27,8 @@ export const config: {
       width: 1600,
       height: 900,
     },
+    args:[
+      "--disable-dev-shm-usage"
+    ]
   },
 };
