@@ -1,7 +1,6 @@
 import { ElementHandle, HTTPResponse, Page, TimeoutError } from 'puppeteer'
 import { MissionRuntime } from './MissionRuntime'
 import { config } from './config'
-import { randomInt } from 'node:crypto'
 
 export class XiaoYouBan extends MissionRuntime {
   private loginUrl: string = 'https://www.xybsyw.com/common.html#/login?paramLoginType=SCHOOL'
@@ -61,19 +60,19 @@ export class XiaoYouBan extends MissionRuntime {
 
     if (!schoolInput) {
       this.logger.error('找不到校区输入文本框')
-      this.shotdown()
+      await this.shotdown()
     }
     if (!userNameInput) {
       this.logger.error('找不到用户名输入文本框')
-      this.shotdown()
+      await this.shotdown()
     }
     if (!userPasswordInput) {
       this.logger.error('找不到密码输入文本框')
-      this.shotdown()
+      await this.shotdown()
     }
     if (!loginBtn) {
       this.logger.error('找不到登录按钮')
-      this.shotdown()
+      await this.shotdown()
     }
 
     // 在对应位置输入相对应的信息，设置模拟输入时每个字符之前的输入时间间隔为50毫秒
@@ -89,11 +88,11 @@ export class XiaoYouBan extends MissionRuntime {
           // 登录成功时，不会存在body，所以获取json会异常：Protocol error (Network.getResponseBody): No resource with given identifier found
           let body = await response.json()
           this.logger.error('login - login failed, reason message: ' + body.msg)
-          this.shotdown()
+          await this.shotdown()
         } catch (error) {
           if (error.message != "Protocol error (Network.getResponseBody): No resource with given identifier found") {
             this.logger.error(error)
-            this.shotdown()
+            await this.shotdown()
           } else {
             this.logger.warn(response.url() + ": " + error.message)
           }
@@ -115,9 +114,9 @@ export class XiaoYouBan extends MissionRuntime {
           console.log(JSON.stringify(response.json))
         }
       })
-      .catch((error) => {
+      .catch(async (error) => {
         this.logger.error(`login - navigation home page timeout, please check your internet, ${error.message}`)
-        this.shotdown()
+        await this.shotdown()
       })
   }
 
@@ -142,9 +141,9 @@ export class XiaoYouBan extends MissionRuntime {
           this.logger.debug(`passWeeklyBlogs - WeeklyBlogs Navigation status is OK`)
         }
       })
-      .catch((error) => {
+      .catch(async (error) => {
         this.logger.error(`passWeeklyBlogs - navigation home page timeout, please check your internet, ${error.message}`)
-        this.shotdown()
+        await this.shotdown()
       })
     // 等待页面出现.tab_box元素
     await this.page.waitForSelector('.tab_box')
@@ -165,7 +164,7 @@ export class XiaoYouBan extends MissionRuntime {
     this.logger.info('待审批：', willPassCount)
     if (willPassCount || willPassCount <= 0) {
       this.logger.info('没有待审批的任务, 结束程序')
-      this.shotdown()
+      await this.shotdown()
     }
 
     let loopFlag = true
@@ -192,9 +191,9 @@ export class XiaoYouBan extends MissionRuntime {
             this.logger.debug(`passWeeklyBlogs - WeeklyBlogs Navigation status is OK`)
           }
         })
-        .catch((error) => {
+        .catch(async (error) => {
           this.logger.error(`passWeeklyBlogs - loadBlogReviewRecord.action timeout, please check your internet, ${error.message}`)
-          this.shotdown()
+          await this.shotdown()
         })
       // 获取学生姓名
       let studentName = await this.page.$eval('.name_1', (node) => node.innerHTML)
@@ -220,16 +219,16 @@ export class XiaoYouBan extends MissionRuntime {
       // await this.page.waitForTimeout(500);
 
       // 等待页面中text_area出现
-      await this.page.waitForSelector('.text_area textarea').catch((error) => {
+      await this.page.waitForSelector('.text_area textarea').catch(async (error) => {
         this.logger.error(`passWeeklyBlogs - waitForSelector [.text_area textarea] timeout, will try again, ${error.message}`)
-        this.shotdown()
+        await this.shotdown()
       })
       // 找到评语填写的textarea
       let commentTextArea = await this.page.$('.text_area textarea')
 
-      await this.page.waitForSelector('.text_area textarea').catch((error) => {
+      await this.page.waitForSelector('.text_area textarea').catch(async (error) => {
         this.logger.error(`passWeeklyBlogs - waitForSelector [.comfirm_btn Button] timeout, will try again, ${error.message}`)
-        this.shotdown()
+        await this.shotdown()
       })
       let comfirmBtn = await this.page.$('.comfirm_btn Button')
       // 随机输入commetList中的一条评论
@@ -248,7 +247,10 @@ export class XiaoYouBan extends MissionRuntime {
   /**
    * 强行结束程序
    */
-  shotdown() {
-    process.exit(0)
+  async shotdown() {
+    this.logger.info("shotdown - will close program in 3 seconds")
+    await this.page.waitForTimeout(3000).then(() => {
+      process.exit(0)
+    })
   }
 }
