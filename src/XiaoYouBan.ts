@@ -91,11 +91,11 @@ export class XiaoYouBan extends MissionRuntime {
           this.logger.error('login - login failed, reason message: ' + body.msg)
           this.shotdown()
         } catch (error) {
-          if (error.message !== "Protocol error (Network.getResponseBody): No resource with given identifier found") {
+          if (error.message != "Protocol error (Network.getResponseBody): No resource with given identifier found") {
             this.logger.error(error)
             this.shotdown()
           } else {
-            this.logger.error(error.message)
+            this.logger.warn(response.url() + ": " + error.message)
           }
           
         }
