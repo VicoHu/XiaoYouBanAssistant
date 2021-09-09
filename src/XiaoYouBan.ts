@@ -5,7 +5,7 @@ import { randomInt } from "node:crypto";
 
 export class XiaoYouBan extends MissionRuntime {
   private loginUrl: string =
-    "https://www.xybsyw.com/login.xhtml?paramLoginType=SCHOOL";
+    "https://www.xybsyw.com/common.html#/login?paramLoginType=SCHOOL";
   private page: Page;
   private userSchool: string;
   private userName: string;
@@ -58,10 +58,24 @@ export class XiaoYouBan extends MissionRuntime {
    */
   async login() {
     // 通过 css selector 找到对应的元素
-    let schoolInput = await this.page.$("#autoSchool");
-    let userNameInput = await this.page.$("#username");
-    let userPasswordInput = await this.page.$("#password");
-    let loginBtn = await this.page.$("#login");
+    let inputList = await this.page.$$(".input_s");
+    let schoolInput = inputList[0];
+    let userNameInput = inputList[1];
+    let userPasswordInput = inputList[2];
+    let loginBtn = await this.page.$(".login_btn");
+
+    if (schoolInput) {
+      this.logger.error("找不到校区输入文本框");
+    }
+    if (userNameInput) {
+      this.logger.error("找不到用户名输入文本框");
+    }
+    if (userPasswordInput) {
+      this.logger.error("找不到密码输入文本框");
+    }
+    if (loginBtn) {
+      this.logger.error("找不到登录按钮");
+    }
 
     // 在对应位置输入相对应的信息，设置模拟输入时每个字符之前的输入时间间隔为50毫秒
     await schoolInput.type(this.userSchool, { delay: 50 });
