@@ -86,15 +86,16 @@ export class XiaoYouBan extends MissionRuntime {
     this.page.on('response', async (response) => {
       if (response.url() == 'https://www.xybsyw.com/login/login.action') {
         try {
+          // 登录成功时，不会存在body，所以获取json会异常：Protocol error (Network.getResponseBody): No resource with given identifier found
           let body = await response.json()
-          if (body.msg == '账号或密码错误') {
-            this.logger.error('login - Incorrect account or password, please check again')
-            this.shotdown()
-          }
+          this.logger.error('login - login failed, reason message: ' + body.msg)
+          this.shotdown()
         } catch (error) {
           if (error.message !== "Protocol error (Network.getResponseBody): No resource with given identifier found") {
             this.logger.error(error)
             this.shotdown()
+          } else {
+            this.logger.error(error.message)
           }
           
         }
